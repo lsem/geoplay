@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import EventBus from "./eventBus"
 
-var map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -34.397, lng: 150.644},
-    zoom: 8
-});
+window.initGoogleMaps = function() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: -34.397, lng: 150.644},
+        zoom: 8
+    });
 
 var drawingManager = new google.maps.drawing.DrawingManager({
     drawingMode: google.maps.drawing.OverlayType.MARKER,
@@ -33,6 +34,8 @@ google.maps.event.addListener(drawingManager, 'rectanglecomplete',
         EventBus.$emit('rectCreated', rectangle.getBounds())
     }
 );
+
+} // function initGoogleMaps
 
 //   poly = new google.maps.Polyline({
 //     strokeColor: '#000000',
