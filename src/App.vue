@@ -31,9 +31,37 @@ export default {
     }
   },
   created () {
+    var self = this
     EventBus.$on('rectCreated', function(bounds) {
-      console.log('Vue: created rect with bounds: ' + JSON.stringify(bounds))
+      self.approxRect({
+        south: bounds.getSouthWest().lat(),
+        west: bounds.getSouthWest().lng(),
+        north: bounds.getNorthEast().lat(),
+        east: bounds.getNorthEast().lng()
+        })
     })
+  },
+  methods: {
+     approxRect: function(bounds) {
+      axios({
+        method: 'get',
+        baseURL: 'http://localhost:8000',
+        url: '/approxRect',
+        params: {
+          south: bounds.south,
+          west: bounds.west,
+          north: bounds.north,
+          east: bounds.east,
+          minLvl: 20,
+          maxLvl: 30,
+          maxCells: 60
+        }
+      }).then(function(response) {
+        console.log('app: got response', response)
+      }).catch(function(error){
+        console.error('app: failed approxing', error)
+      })
+    }
   }
 }
 </script>
