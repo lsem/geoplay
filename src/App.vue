@@ -52,12 +52,13 @@ export default {
           west: bounds.west,
           north: bounds.north,
           east: bounds.east,
-          minLvl: 20,
+          minLvl: 1,
           maxLvl: 30,
           maxCells: 60
         }
       }).then(function(response) {
         console.log('app: got response', response)
+        EventBus.$emit('regionApproximated', response.data);
       }).catch(function(error){
         console.error('app: failed approxing', error)
       })
