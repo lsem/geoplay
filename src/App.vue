@@ -1,7 +1,15 @@
 <template>
   <div id="app">
     <div class="tools">
-      <b-button class="toolb" :size="sm" :variant="success" href="">
+<button type="button" class="btn btn-outline-primary btn-sm">Primary</button>
+<button type="button" class="btn btn-outline-secondary btn-sm">Secondary</button>
+<button type="button" class="btn btn-outline-success btn-sm">Success</button>
+<button type="button" class="btn btn-outline-info btn-sm">Info</button>
+<button type="button" class="btn btn-outline-warning btn-sm">Warning</button>
+<button type="button" class="btn btn-sm btn-outline-danger ">Danger</button>  
+<button type="button" class="btn btn-primary btn-sm">Small button</button>
+<button type="button" class="btn btn-secondary btn-sm">Small button</button>    
+      <!--<b-button class="toolb" :size="sm" :variant="success" href="">
         Tool 1
       </b-button>
       <b-button class="toolb" :size="sm" :variant="success" href="">
@@ -12,7 +20,7 @@
       </b-button>
       <b-button class="toolb" :size="sm" :variant="success" href="">
         Tool 4
-      </b-button>
+      </b-button>-->
     </div>
   </div>
 </template>

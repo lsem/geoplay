@@ -33,22 +33,21 @@ var infoWindow = new google.maps.InfoWindow()
 var lastTimeoutScheduled = null
 rectangle.addListener('bounds_changed', function(event) {
     if (lastTimeoutScheduled) clearTimeout(lastTimeoutScheduled)
-    lastTimeoutScheduled = setTimeout(function(){
+    lastTimeoutScheduled = setTimeout(function() {
             EventBus.$emit('rectCreated', rectangle.getBounds())
-        }, 200)
+        }, 10)
     })
 }
 
-var cellsPolygonsPool = []
+//var cellsPolygonsPool = []
 
-EventBus.$on('regionApproximated', function(data) {
-    cellsPolygonsPool.forEach(function (polygon) {
-         polygon.setMap(null)
-    })
-    cellsPolygonsPool = []
-    data.cells.forEach(function(item, index) {
-        var newCellPolygon = new google.maps.Polygon({
-            paths: item.vertices, // {lat: X, lng: Y} is what api expects
+var usedPolygons = []
+var unusedPolygons = []
+function dequeuePolygon(vertices) {
+    if (unusedPolygons.length == 0) {
+        console.log('created new polygon')
+        var newPolygon = new google.maps.Polygon({
+            paths: [], // {lat: X, lng: Y} is what api expects
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,
             strokeWeight: 1,
@@ -57,8 +56,32 @@ EventBus.$on('regionApproximated', function(data) {
             geodesic: true,
             zIndex: 10
         })
-        newCellPolygon.setMap(map)
-        cellsPolygonsPool.push(newCellPolygon)
-    })
-})
+        unusedPolygons.push(newPolygon)
+    }
+    var polygon = unusedPolygons.pop()
+    polygon.paths = vertices
+    usedPolygons.push(polygon)
+    return polygon
+}
 
+function returnBackAll() {
+    var usedCount = usedPolygons.length
+    for (var n = 0; n < usedCount; n++) {
+        var polygon = usedPolygons.pop()
+        polygon.setMap(null)
+        unusedPolygons.push(polygon)
+    }
+    console.assert(usedPolygons.length == 0)
+}
+
+EventBus.$on('regionApproximated', function(data) {
+    try {
+        returnBackAll()
+        data.cells.forEach(function(item, index) {
+            var polygon = dequeuePolygon(item.vertices)
+            polygon.setMap(map)
+        })
+    } catch(error) {
+        console.error('ERROR: ', error)
+    }
+})
