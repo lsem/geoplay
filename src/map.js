@@ -34,9 +34,11 @@ var lastTimeoutScheduled = null
 rectangle.addListener('bounds_changed', function(event) {
     if (lastTimeoutScheduled) clearTimeout(lastTimeoutScheduled)
     lastTimeoutScheduled = setTimeout(function(){
-            EventBus.$emit('rectCreated', rectangle.getBounds())
-        }, 200)
-    })
+        console.log('Bounds changed: ', JSON.stringify(rectangle.getBounds()))
+        EventBus.$emit('rectCreated', rectangle.getBounds())
+    }, 200)
+})
+
 }
 
 var cellsPolygonsPool = []

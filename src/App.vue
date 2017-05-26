@@ -1,18 +1,7 @@
 <template>
   <div id="app">
     <div class="tools">
-      <b-button class="toolb" :size="sm" :variant="success" href="">
-        Tool 1
-      </b-button>
-      <b-button class="toolb" :size="sm" :variant="success" href="">
-        Tool 2
-      </b-button>
-      <b-button class="toolb" :size="sm" :variant="success" href="">
-        Tool 3
-      </b-button>
-      <b-button class="toolb" :size="sm" :variant="success" href="">
-        Tool 4
-      </b-button>
+      <span id="status">Status: {{status}} </span>
     </div>
   </div>
 </template>
@@ -25,9 +14,12 @@ import EventBus from "./eventBus"
 
 export default {
   name: 'app',
+  props: {
+    status: Date.now() + ': i'
+  },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to Your Vue.js App',
     }
   },
   created () {
@@ -43,6 +35,7 @@ export default {
   },
   methods: {
      approxRect: function(bounds) {
+       var self = this
       axios({
         method: 'get',
         baseURL: 'http://localhost:8000',
@@ -54,14 +47,17 @@ export default {
           east: bounds.east,
           minLvl: 1,
           maxLvl: 30,
-          maxCells: 60
+          maxCells: 20
         }
       }).then(function(response) {
         console.log('app: got response', response)
         EventBus.$emit('regionApproximated', response.data);
+        self.status = "done"
       }).catch(function(error){
         console.error('app: failed approxing', error)
+        self.status = "error"
       })
+      self.status = "requested ..."
     }
   }
 }
